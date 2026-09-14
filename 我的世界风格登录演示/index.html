@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6fa8dc" />
+  <title>BlockCraft · 登录服务器</title>
+
+  <!-- 像素字体（无网络时自动回退到系统等宽/黑体） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       背景场景：天空 + 云 + 悬浮方块 + 草地
+       纯装饰，不参与交互
+       ============================================================ -->
+  <div class="scene" aria-hidden="true">
+
+    <!-- 云朵（像素方块拼成） -->
+    <svg class="cloud cloud-1" viewBox="0 0 24 14" shape-rendering="crispEdges">
+      <rect x="3"  y="6" width="7"  height="4" />
+      <rect x="9"  y="3" width="8"  height="7" />
+      <rect x="6"  y="9" width="12" height="3" />
+      <rect x="17" y="6" width="5"  height="3" />
+      <rect x="11" y="1" width="5"  height="3" />
+    </svg>
+
+    <svg class="cloud cloud-2" viewBox="0 0 24 14" shape-rendering="crispEdges">
+      <rect x="4"  y="7" width="6"  height="3" />
+      <rect x="10" y="4" width="9"  height="6" />
+      <rect x="7"  y="10" width="13" height="2" />
+      <rect x="19" y="6" width="4"  height="4" />
+    </svg>
+
+    <svg class="cloud cloud-3" viewBox="0 0 24 14" shape-rendering="crispEdges">
+      <rect x="2"  y="5" width="9"  height="5" />
+      <rect x="8"  y="2" width="7"  height="8" />
+      <rect x="5"  y="9" width="14" height="3" />
+    </svg>
+
+    <!-- 悬浮的草方块（左右两侧装饰） -->
+    <div class="block block-1"></div>
+    <div class="block block-2"></div>
+    <div class="block block-3"></div>
+
+    <!-- 地面：草皮层 + 泥土层 -->
+    <div class="ground">
+      <div class="grass-layer"></div>
+      <div class="dirt-layer"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       主体：Logo + 登录面板
+       ============================================================ -->
+  <main class="wrap">
+
+    <!-- 标题区 -->
+    <header class="logo-row">
+      <!-- 苦力怕脸 Logo（8×8 像素画） -->
+      <span class="creeper" aria-hidden="true">
+        <svg viewBox="0 0 8 8" shape-rendering="crispEdges">
+          <rect x="0" y="0" width="8" height="8" fill="#5aa64b" />
+          <rect x="1" y="1" width="2" height="2" fill="#0e0e0e" />
+          <rect x="5" y="1" width="2" height="2" fill="#0e0e0e" />
+          <rect x="3" y="3" width="2" height="1" fill="#0e0e0e" />
+          <rect x="2" y="4" width="4" height="2" fill="#0e0e0e" />
+          <rect x="2" y="6" width="1" height="1" fill="#0e0e0e" />
+          <rect x="5" y="6" width="1" height="1" fill="#0e0e0e" />
+        </svg>
+      </span>
+
+      <h1 class="brand">BlockCraft</h1>
+
+      <!-- 主菜单同款斜体黄色 splash 文字 -->
+      <span class="splash">欢迎回来，冒险家!</span>
+    </header>
+
+    <p class="subtitle">输入账号密码，重新进入你的世界</p>
+
+    <!-- 登录面板：Minecraft GUI 风格 -->
+    <section class="panel">
+
+      <div class="panel-head">
+        <h2 class="panel-title">登 录 / LOGIN</h2>
+      </div>
+
+      <div class="panel-body">
+        <form id="loginForm" class="login-form" novalidate>
+
+          <!-- 账号 -->
+          <div class="field">
+            <label class="field-label" for="email">账号（邮箱 / 用户名）</label>
+            <div class="slot">
+              <input
+                id="email"
+                name="email"
+                type="text"
+                class="input"
+                placeholder="Steve"
+                autocomplete="username"
+                aria-describedby="emailError"
+              />
+            </div>
+            <p class="field-error" id="emailError" role="alert"></p>
+          </div>
+
+          <!-- 密码 -->
+          <div class="field">
+            <label class="field-label" for="password">密码</label>
+            <div class="slot">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                class="input"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                aria-describedby="passwordError"
+              />
+              <button type="button" class="btn-toggle" id="togglePassword">显示</button>
+            </div>
+            <p class="field-error" id="passwordError" role="alert"></p>
+          </div>
+
+          <!-- 记住我 + 忘记密码 -->
+          <div class="options">
+            <label class="check" for="remember">
+              <input type="checkbox" id="remember" class="check-input" />
+              <span class="check-box">
+                <svg viewBox="0 0 20 20" shape-rendering="crispEdges">
+                  <path d="M3 10 L7 14 L16 4" fill="none" stroke="#6ee04f" stroke-width="4" />
+                </svg>
+              </span>
+              <span class="check-text">记住我</span>
+            </label>
+
+            <a class="link" href="#">忘记密码？</a>
+          </div>
+
+          <!-- 主按钮（含像素进度条加载态） -->
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span class="btn-label">开始游戏</span>
+            <span class="btn-progress">
+              <span class="bar"><span class="bar-fill" id="barFill"></span></span>
+              <span class="bar-text" id="barText">加载世界中… 0%</span>
+            </span>
+          </button>
+        </form>
+
+        <!-- 分隔线 -->
+        <div class="divider"><span>或</span></div>
+
+        <!-- 第三方登录 -->
+        <div class="quick">
+          <button type="button" class="btn btn-ghost">微软账号</button>
+          <button type="button" class="btn btn-ghost">微信</button>
+          <button type="button" class="btn btn-ghost">GitHub</button>
+        </div>
+
+        <!-- 注册引导 -->
+        <p class="panel-foot">
+          还没有账号？<a class="link" href="#">注册新角色</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 角落 HUD 文字（主菜单同款） -->
+  <p class="hud hud-left">BlockCraft 1.21.4 (Java Edition)</p>
+  <p class="hud hud-right">非官方粉丝作品 · 与 Mojang 无关</p>
+
+  <script src="script.js"></script>
+</body>
+</html>

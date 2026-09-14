@@ -1,0 +1,778 @@
+/* ============================================================
+   BlockCraft · Minecraft 风格登录页
+   目录：
+   1. 像素风设计令牌      2. 基础重置
+   3. 场景（天空/云/方块/地面）  4. 标题区
+   5. GUI 面板            6. 表单控件（输入槽/复选框）
+   7. 按钮（含加载态）    8. 第三方登录
+   9. 角落 HUD            10. 动效
+   11. 响应式
+   ============================================================ */
+
+/* ---------------- 1. 像素风设计令牌 ---------------- */
+:root {
+  /* 字体：Latin 用像素字，中文自动回退到系统黑体 */
+  --font: "Press Start 2P", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "SimHei", monospace;
+
+  /* Minecraft GUI 灰面板 */
+  --gui: #c6c6c6;
+  --gui-hi: #ffffff;   /* 受光边（左上） */
+  --gui-lo: #8b8b8b;   /* 背光边（右下） */
+  --gui-line: #1a1a1a; /* 外描边 */
+  --gui-dark: #3f3f3f; /* 面板深色标题条 */
+
+  /* 按钮 */
+  --btn: #8b8b8b;
+  --btn-hover: #a3a3a3;
+  --btn-text: #ffffff;
+
+  /* 输入槽 */
+  --slot: #000000;
+  --slot-hi: #ffffff;
+  --slot-lo: #8b8b8b;
+
+  /* 场景 */
+  --sky-top: #5b8dd9;
+  --sky-mid: #7fb0ee;
+  --sky-low: #cfe3ff;
+  --grass: #5fa336;
+  --grass-light: #74c042;
+  --dirt: #8b6239;
+  --dirt-dark: #6f4d2c;
+
+  /* 状态色 */
+  --accent: #6ee04f;  /* 草绿 / 经验条绿 */
+  --danger: #d32f2f;
+  --link: #1a5fb4;
+
+  --shadow: 2px 2px 0 #3f3f3f;   /* 像素文字投影 */
+  --shadow-lg: 3px 3px 0 #3f3f3f;
+}
+
+/* ---------------- 2. 基础重置 ---------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.85;
+  color: #fff;
+  background: var(--sky-top);
+  /* 像素风：关闭抗锯齿与圆角 */
+  -webkit-font-smoothing: none;
+  text-rendering: geometricPrecision;
+  /* 防止 splash 文字在极窄屏撑出横向滚动条 */
+  overflow-x: hidden;
+}
+
+svg {
+  display: block;
+  shape-rendering: crispEdges;
+}
+
+img,
+svg {
+  image-rendering: pixelated;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---------------- 3. 背景场景 ---------------- */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 天空 */
+.scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--sky-top) 0%,
+    var(--sky-mid) 42%,
+    var(--sky-low) 78%,
+    #eaf3ff 100%
+  );
+}
+
+/* 云：白色像素块 + 缓慢横向漂移 */
+.cloud {
+  position: absolute;
+  fill: #ffffff;
+  opacity: 0.9;
+  filter: drop-shadow(4px 4px 0 rgba(70, 110, 170, 0.25));
+  animation: drift linear infinite;
+}
+
+.cloud-1 {
+  width: 190px;
+  top: 12%;
+  animation-duration: 90s;
+}
+
+.cloud-2 {
+  width: 140px;
+  top: 30%;
+  opacity: 0.75;
+  animation-duration: 130s;
+  animation-delay: -40s;
+}
+
+.cloud-3 {
+  width: 240px;
+  top: 5%;
+  opacity: 0.6;
+  animation-duration: 160s;
+  animation-delay: -90s;
+}
+
+/* 悬浮草方块 */
+.block {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  background: var(--dirt);
+  background-image: repeating-conic-gradient(
+    rgba(0, 0, 0, 0.12) 0% 25%,
+    transparent 0% 50%
+  );
+  background-size: 16px 16px;
+  border: 3px solid;
+  border-color: var(--dirt) var(--dirt-dark) var(--dirt-dark) var(--dirt);
+  transition: none;
+}
+
+/* 草皮顶面 */
+.block::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  height: 15px;
+  background: var(--grass);
+  background-image: repeating-conic-gradient(
+    rgba(255, 255, 255, 0.16) 0% 25%,
+    transparent 0% 50%
+  );
+  background-size: 10px 10px;
+  border-bottom: 3px solid #47801f;
+}
+
+.block-1 {
+  left: 12%;
+  top: 24%;
+  animation: bob 4.4s ease-in-out infinite;
+}
+
+.block-2 {
+  right: 13%;
+  top: 38%;
+  width: 34px;
+  height: 34px;
+  animation: bob 5.6s ease-in-out infinite reverse;
+}
+
+.block-3 {
+  left: 20%;
+  bottom: 20%;
+  width: 28px;
+  height: 28px;
+  animation: bob 6.8s ease-in-out infinite;
+}
+
+/* 地面 */
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+}
+
+.grass-layer {
+  height: 22px;
+  background: var(--grass);
+  background-image: repeating-conic-gradient(
+    rgba(255, 255, 255, 0.14) 0% 25%,
+    transparent 0% 50%
+  );
+  background-size: 16px 16px;
+  border-bottom: 5px solid #47801f;
+}
+
+.dirt-layer {
+  height: calc(100% - 22px);
+  background: var(--dirt);
+  background-image: repeating-conic-gradient(
+      rgba(0, 0, 0, 0.12) 0% 25%,
+      transparent 0% 50%
+    ),
+    repeating-conic-gradient(rgba(255, 255, 255, 0.06) 0% 25%, transparent 0% 50%);
+  background-size: 20px 20px, 40px 40px;
+  background-position: 0 0, 10px 10px;
+}
+
+/* ---------------- 4. 主体与标题区 ---------------- */
+.wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 48px 20px 180px;
+}
+
+.logo-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.creeper {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--gui-line);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.28);
+}
+
+.creeper svg {
+  width: 100%;
+  height: 100%;
+}
+
+.brand {
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: var(--shadow-lg);
+}
+
+/* 主菜单同款黄色斜体 splash */
+.splash {
+  position: absolute;
+  right: -18px;
+  bottom: -22px;
+  font-size: 11px;
+  color: #ffff55;
+  text-shadow: 2px 2px 0 #3f3f3f;
+  transform: rotate(-14deg);
+  transform-origin: center;
+  animation: pulse 1.1s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+.subtitle {
+  margin-top: 26px;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: var(--shadow);
+}
+
+/* ---------------- 5. GUI 面板 ---------------- */
+.panel {
+  width: min(100%, 460px);
+  margin-top: 22px;
+  padding: 12px 0 24px;
+  background: var(--gui);
+  border: 3px solid var(--gui-line);
+  /* 经典 GUI 立体边：左上受光、右下背光 */
+  box-shadow: inset 3px 3px 0 var(--gui-hi), inset -3px -3px 0 var(--gui-lo),
+    8px 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* 深色标题条（占满宽度，保留上下 GUI 立体边） */
+.panel-head {
+  margin-bottom: 22px;
+  padding: 12px 24px;
+  background: var(--gui-dark);
+  border-top: 3px solid #2a2a2a;
+  border-bottom: 3px solid #2a2a2a;
+  box-shadow: inset 0 3px 0 #5a5a5a;
+}
+
+.panel-title {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-align: center;
+  color: #fff;
+  text-shadow: 2px 2px 0 #1a1a1a;
+}
+
+.panel-body {
+  padding: 0 24px;
+}
+
+/* ---------------- 6. 表单控件 ---------------- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-label {
+  margin-bottom: 7px;
+  font-size: 12px;
+  color: #3f3f3f;
+  /* 石头按钮同款文字浮雕 */
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* 输入槽：黑色凹陷，模拟 MC 文本框 */
+.slot {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 6px 0 12px;
+  background: var(--slot);
+  border: 2px solid;
+  /* 上/左深、下/右亮 = 凹陷 */
+  border-color: var(--slot-lo) var(--slot-hi) var(--slot-hi) var(--slot-lo);
+  transition: border-color 0.12s steps(2, end);
+}
+
+.slot:hover {
+  border-color: #a8a8a8 var(--slot-hi) var(--slot-hi) #a8a8a8;
+}
+
+/* 聚焦：整槽换绿色描边（草绿/经验条色） */
+.slot:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(110, 224, 79, 0.28);
+}
+
+/* 校验失败：红色描边 */
+.slot.has-error,
+.slot.has-error:focus-within {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.25);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: #fff;
+  caret-color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+.input::placeholder {
+  color: #6b6b6b;
+}
+
+.input::selection {
+  background: #4a7d2a;
+}
+
+/* 显示/隐藏密码：迷你 GUI 按钮 */
+.btn-toggle {
+  flex: none;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3f3f3f;
+  background: var(--btn);
+  border: 2px solid;
+  border-color: var(--gui-hi) #4c4c4c #4c4c4c var(--gui-hi);
+  cursor: pointer;
+}
+
+.btn-toggle:hover {
+  background: var(--btn-hover);
+}
+
+.btn-toggle:active {
+  border-color: #4c4c4c var(--gui-hi) var(--gui-hi) #4c4c4c;
+}
+
+/* 错误提示 */
+.field-error {
+  min-height: 16px;
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--danger);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* 选项行 */
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+/* 自定义像素复选框 */
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.check-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.check-box {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  background: var(--slot);
+  border: 2px solid;
+  border-color: var(--slot-lo) var(--slot-hi) var(--slot-hi) var(--slot-lo);
+}
+
+.check-box svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  transition: opacity 0.08s steps(1, end);
+}
+
+.check-input:checked + .check-box svg {
+  opacity: 1;
+}
+
+.check-input:focus-visible + .check-box {
+  box-shadow: 0 0 0 2px rgba(110, 224, 79, 0.35);
+}
+
+.check-text {
+  font-size: 12px;
+  color: #3f3f3f;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* 链接 */
+.link {
+  font-size: 12px;
+  color: var(--link);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
+  border-bottom: 2px solid rgba(26, 95, 180, 0.35);
+}
+
+.link:hover {
+  color: #0f3f7d;
+  border-bottom-color: #0f3f7d;
+}
+
+/* ---------------- 7. 按钮 ---------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--btn-text);
+  text-shadow: 2px 2px 0 #3f3f3f;
+  background: var(--btn);
+  border: 3px solid;
+  /* 上/左亮、下/右暗 = 凸起 */
+  border-color: var(--gui-hi) #4c4c4c #4c4c4c var(--gui-hi);
+  cursor: pointer;
+  transition: background 0.1s steps(2, end), color 0.1s steps(2, end);
+}
+
+/* hover：提亮 + 描边泛黄（MC 按钮高亮手感） */
+.btn:hover:not(:disabled) {
+  background: var(--btn-hover);
+  border-color: #ffffa0;
+  color: #ffffa0;
+}
+
+/* 按下：立体边反转 + 位移 2px */
+.btn:active:not(:disabled) {
+  border-color: #4c4c4c var(--gui-hi) var(--gui-hi) #4c4c4c;
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid #ffffa0;
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  width: 100%;
+  height: 52px;
+  margin-top: 6px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.btn-primary:disabled {
+  cursor: wait;
+  color: #d8d8d8;
+}
+
+/* 加载态：像素进度条（类似「加载世界中」） */
+.btn-progress {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.bar {
+  width: 62%;
+  height: 12px;
+  background: #1a1a1a;
+  border: 2px solid;
+  border-color: #4c4c4c #e0e0e0 #e0e0e0 #4c4c4c;
+}
+
+.bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+  /* 进度条格子纹理 */
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.18) 0 4px,
+    transparent 4px 8px
+  );
+}
+
+.bar-text {
+  font-size: 9px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3f3f3f;
+}
+
+/* 加载中隐藏文字、显示进度条 */
+.btn-primary.is-loading .btn-label {
+  opacity: 0;
+}
+
+.btn-primary.is-loading .btn-progress {
+  display: flex;
+}
+
+/* ---------------- 8. 分隔线 / 第三方登录 ---------------- */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 16px;
+  font-size: 11px;
+  color: #3f3f3f;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 3px;
+  background: #a8a8a8;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.quick {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.btn-ghost {
+  height: 40px;
+  font-size: 11px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.panel-foot {
+  margin-top: 20px;
+  font-size: 12px;
+  text-align: center;
+  color: #3f3f3f;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* ---------------- 9. 角落 HUD ---------------- */
+.hud {
+  position: fixed;
+  bottom: 8px;
+  z-index: 2;
+  font-size: 9px;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.hud-left {
+  left: 10px;
+}
+
+.hud-right {
+  right: 10px;
+}
+
+/* ---------------- 10. 动效 ---------------- */
+@keyframes drift {
+  from {
+    transform: translateX(-30vw);
+  }
+  to {
+    transform: translateX(115vw);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: rotate(-14deg) scale(1);
+  }
+  50% {
+    transform: rotate(-14deg) scale(1.08);
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.panel {
+  animation: panelIn 0.35s steps(6, end) both;
+}
+
+/* 尊重系统「减少动态效果」 */
+@media (prefers-reduced-motion: reduce) {
+  .cloud,
+  .block,
+  .splash {
+    animation: none;
+  }
+}
+
+/* ---------------- 11. 响应式 ---------------- */
+@media (max-width: 900px) {
+  .block-1,
+  .block-3 {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    padding: 32px 14px 150px;
+  }
+
+  .brand {
+    font-size: 22px;
+  }
+
+  .creeper {
+    width: 34px;
+    height: 34px;
+  }
+
+  .splash {
+    font-size: 10px;
+    right: -6px;
+    bottom: -18px;
+  }
+
+  .ground {
+    height: 96px;
+  }
+
+  .panel-body {
+    padding: 0 16px;
+  }
+
+  .panel-head {
+    padding: 11px 16px;
+  }
+
+  .quick {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-ghost {
+    height: 38px;
+  }
+
+  .hud-right {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+}
