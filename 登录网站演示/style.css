@@ -1,0 +1,752 @@
+/* ============================================================
+   Nebula · 登录页样式
+   结构：CSS 变量 → 基础重置 → 布局 → 品牌区 → 登录卡片
+        → 表单控件 → 按钮 → 第三方登录 → 响应式 / 深色模式
+   ============================================================ */
+
+/* ---------------- 1. 设计令牌（CSS 变量） ---------------- */
+:root {
+  /* 品牌色：深蓝紫渐变 */
+  --brand-1: #6366f1;
+  --brand-2: #8b5cf6;
+  --brand-1-dark: #4f46e5;
+  --brand-2-dark: #7c3aed;
+
+  /* 背景与文字 */
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --text-muted: #94a3b8;
+  --text-label: #475569;
+  --border: #e2e8f0;
+  --surface: #ffffff;
+
+  /* 卡片 */
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --card-border: rgba(255, 255, 255, 0.9);
+  --radius-card: 20px;
+  --radius-input: 12px;
+  --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.08);
+  --shadow-brand: 0 10px 30px -8px rgba(99, 102, 241, 0.45);
+
+  /* 状态色 */
+  --danger: #ef4444;
+  --danger-ring: rgba(239, 68, 68, 0.12);
+  --ring: rgba(99, 102, 241, 0.14);
+
+  /* 动效 */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------------- 2. 基础重置 ---------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---------------- 3. 布局：桌面端左右分栏 ---------------- */
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* ---------------- 4. 左侧品牌区 ---------------- */
+.brand-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 64px 40px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 100%);
+}
+
+.brand-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+  margin-top: auto;
+  margin-bottom: auto;
+  animation: fadeUp 0.7s var(--ease) both;
+}
+
+/* Logo */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  margin-bottom: 48px;
+}
+
+.logo-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(6px);
+}
+
+.logo-mark svg {
+  width: 24px;
+  height: 24px;
+}
+
+.logo-text {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* 标语 */
+.brand-headline {
+  font-size: 40px;
+  line-height: 1.24;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand-sub {
+  margin-top: 18px;
+  max-width: 360px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.brand-foot {
+  position: relative;
+  z-index: 1;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 装饰光斑 */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.glow-1 {
+  width: 380px;
+  height: 380px;
+  top: -120px;
+  right: -110px;
+  background: rgba(255, 255, 255, 0.28);
+  animation: drift 14s ease-in-out infinite;
+}
+
+.glow-2 {
+  width: 300px;
+  height: 300px;
+  bottom: -90px;
+  left: -70px;
+  background: rgba(129, 140, 248, 0.55);
+  animation: drift 18s ease-in-out infinite reverse;
+}
+
+.glow-3 {
+  width: 200px;
+  height: 200px;
+  top: 45%;
+  right: 8%;
+  background: rgba(196, 181, 253, 0.35);
+  animation: drift 22s ease-in-out infinite;
+}
+
+/* ---------------- 5. 右侧表单区 ---------------- */
+.form-panel {
+  display: grid;
+  place-items: center;
+  padding: 48px 40px;
+  background: var(--bg);
+}
+
+/* 登录卡片：毛玻璃 + 柔和阴影 + 入场动画 */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 38px 34px;
+  border-radius: var(--radius-card);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  animation: fadeUp 0.6s var(--ease) both;
+  animation-delay: 0.08s;
+}
+
+.card-head {
+  margin-bottom: 28px;
+}
+
+.card-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.card-desc {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ---------------- 6. 表单控件 ---------------- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-label);
+}
+
+.field-row .field-label {
+  margin-bottom: 0;
+}
+
+/* 输入框容器：聚焦时整体轻微放大（scale） */
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-input);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.22s var(--ease), box-shadow 0.22s var(--ease),
+    transform 0.22s var(--ease), background 0.22s var(--ease);
+}
+
+.input-wrap:hover {
+  border-color: #cbd5e1;
+}
+
+/* 聚焦：主色描边 + 光晕 + 轻微放大 */
+.input-wrap:focus-within {
+  border-color: var(--brand-1);
+  box-shadow: 0 0 0 4px var(--ring);
+  transform: scale(1.012);
+}
+
+/* 校验失败：红色描边 */
+.input-wrap.has-error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px var(--danger-ring);
+}
+
+.input-wrap.has-error:focus-within {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px var(--danger-ring);
+}
+
+.input-icon {
+  display: grid;
+  place-items: center;
+  padding-left: 14px;
+  color: var(--text-muted);
+  transition: color 0.22s var(--ease);
+}
+
+.input-wrap:focus-within .input-icon {
+  color: var(--brand-1);
+}
+
+.input-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  padding: 0 16px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.input::placeholder {
+  color: #cbd5e1;
+}
+
+/* 密码显示/隐藏 */
+#password {
+  padding-right: 4px;
+}
+
+.btn-eye {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.btn-eye:hover {
+  color: var(--text-label);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.btn-eye svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* 默认显示「睁眼」，密码可见时切换为「闭眼」 */
+.btn-eye .eye-closed {
+  display: none;
+}
+
+.btn-eye.is-visible .eye-open {
+  display: none;
+}
+
+.btn-eye.is-visible .eye-closed {
+  display: block;
+}
+
+/* 错误提示文字 */
+.field-error {
+  min-height: 16px;
+  margin-top: 6px;
+  padding-left: 2px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--danger);
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.field-error.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 忘记密码链接 */
+.link-forgot,
+.link-strong {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-1);
+  transition: color 0.2s;
+}
+
+.link-forgot:hover,
+.link-strong:hover {
+  color: var(--brand-2);
+}
+
+/* 自定义复选框 */
+.checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox-box {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: #fff;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+    transform 0.15s var(--ease);
+}
+
+.checkbox-box svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.18s, transform 0.18s var(--ease);
+}
+
+.checkbox:checked + .checkbox-box {
+  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+  border-color: transparent;
+}
+
+.checkbox:checked + .checkbox-box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.checkbox:focus-visible + .checkbox-box {
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+.checkbox-text {
+  font-size: 13px;
+  color: var(--text-label);
+}
+
+/* ---------------- 7. 主按钮 ---------------- */
+.btn-primary {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin-top: 4px;
+  border: none;
+  border-radius: var(--radius-input);
+  overflow: hidden;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 100%);
+  box-shadow: var(--shadow-brand);
+  transition: transform 0.16s var(--ease), box-shadow 0.24s var(--ease),
+    filter 0.24s var(--ease);
+}
+
+/* hover：渐变加深 + 上浮 */
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--brand-1-dark) 0%, var(--brand-2-dark) 100%);
+  filter: saturate(115%);
+  transform: translateY(-1.5px);
+  box-shadow: 0 16px 34px -10px rgba(99, 102, 241, 0.6);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 8px 20px -8px rgba(99, 102, 241, 0.5);
+}
+
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring), var(--shadow-brand);
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+}
+
+.btn-label {
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+/* 加载中的旋转指示器 */
+.btn-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: spin 0.7s linear infinite;
+}
+
+.btn-primary.is-loading .btn-label {
+  opacity: 0;
+}
+
+.btn-primary.is-loading .btn-spinner {
+  opacity: 1;
+}
+
+/* ---------------- 8. 分隔线与第三方登录 ---------------- */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 26px 0 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider span {
+  padding: 0 14px;
+}
+
+.socials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.social-btn {
+  display: grid;
+  place-items: center;
+  height: 48px;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.16s var(--ease), border-color 0.2s,
+    box-shadow 0.24s var(--ease), background 0.2s;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 22px -10px rgba(15, 23, 42, 0.22);
+}
+
+.social-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+.social-btn svg {
+  width: 21px;
+  height: 21px;
+}
+
+/* 底部注册引导 */
+.card-foot {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ---------------- 9. 关键帧动画 ---------------- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-24px, 26px) scale(1.08);
+  }
+}
+
+/* 尊重系统「减少动态效果」偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------- 10. 响应式：平板 → 手机 ---------------- */
+/* ≤ 960px：品牌区收窄，标题缩小 */
+@media (max-width: 960px) {
+  .auth {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .brand-panel {
+    padding: 40px 32px;
+  }
+
+  .brand-headline {
+    font-size: 30px;
+  }
+
+  .brand-logo {
+    margin-bottom: 32px;
+  }
+}
+
+/* ≤ 768px：堆叠为单列，表单在上、品牌区在下 */
+@media (max-width: 768px) {
+  .auth {
+    grid-template-columns: 1fr;
+    min-height: 100dvh;
+  }
+
+  .form-panel {
+    order: 1;
+    padding: 32px 20px 24px;
+  }
+
+  .brand-panel {
+    order: 2;
+    padding: 40px 24px 32px;
+    text-align: center;
+  }
+
+  .brand-inner {
+    margin: 0 auto;
+  }
+
+  /* 移动端隐藏光斑与版权行，保持简洁 */
+  .glow,
+  .brand-foot {
+    display: none;
+  }
+
+  .brand-logo {
+    justify-content: center;
+    margin-bottom: 22px;
+  }
+
+  .brand-headline {
+    font-size: 24px;
+  }
+
+  .brand-headline br {
+    display: none;
+  }
+
+  .brand-sub {
+    margin: 12px auto 0;
+    font-size: 13.5px;
+    max-width: 320px;
+  }
+}
+
+/* ≤ 420px：小屏手机（375px 起） */
+@media (max-width: 420px) {
+  .login-card {
+    padding: 30px 22px 26px;
+    border-radius: 18px;
+  }
+
+  .card-title {
+    font-size: 23px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+  }
+
+  .input,
+  .btn-primary {
+    height: 48px;
+  }
+
+  .socials {
+    gap: 10px;
+  }
+
+  .form-panel {
+    padding: 24px 14px 20px;
+  }
+}
+
+/* ---------------- 11. 深色模式（跟随系统，可选） ---------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-label: #cbd5e1;
+    --border: #293548;
+    --surface: rgba(30, 41, 59, 0.72);
+    --card-bg: rgba(23, 32, 51, 0.72);
+    --card-border: rgba(148, 163, 184, 0.14);
+    --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.42);
+  }
+
+  .input::placeholder {
+    color: #64748b;
+  }
+
+  .input-wrap:hover {
+    border-color: #3b4a63;
+  }
+
+  .social-btn:hover {
+    border-color: #3b4a63;
+    box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.6);
+  }
+
+  .social-btn[aria-label*="GitHub"] {
+    color: #e2e8f0;
+  }
+}
