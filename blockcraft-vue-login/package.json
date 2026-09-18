@@ -1,0 +1,21 @@
+{
+  "name": "blockcraft-vue-login",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "BlockCraft · Minecraft 像素风格的登录页（Vue 3 + Vite 重构版）",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:standalone": "vite build --config vite.config.standalone.js",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.7",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}

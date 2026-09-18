@@ -1,0 +1,69 @@
+/* ============================================================
+   2. 基础重置 + 全局排版
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.85;
+  color: #fff;
+  background: var(--sky-top);
+  /* 像素风：关闭抗锯齿与圆角 */
+  -webkit-font-smoothing: none;
+  text-rendering: geometricPrecision;
+  /* 防止 splash 文字在极窄屏撑出横向滚动条 */
+  overflow-x: hidden;
+}
+
+/* Vue 根节点铺满视口，保证 fixed 场景与 z-index 分层正常 */
+#app {
+  min-height: 100vh;
+}
+
+svg {
+  display: block;
+  shape-rendering: crispEdges;
+}
+
+img,
+svg {
+  image-rendering: pixelated;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---------------- 键盘可达性 ---------------- */
+/* 鼠标点击不出焦点框，键盘 Tab 才出，保持像素风的干净外观 */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---------------- 尊重系统「减少动态效果」 ---------------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

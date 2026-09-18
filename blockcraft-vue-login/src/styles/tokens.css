@@ -1,0 +1,75 @@
+/* ============================================================
+   1. 像素风设计令牌（Design Tokens）
+   所有颜色 / 字体 / 投影都从这里取值，
+   组件内不允许出现裸色值，改主题只需改这一个文件。
+   ============================================================ */
+
+:root {
+  /* ---------- 字体 ---------- */
+  /* Latin 用像素字，中文自动回退到系统黑体 */
+  --font: "Press Start 2P", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "SimHei", monospace;
+
+  /* ---------- Minecraft GUI 灰面板 ---------- */
+  --gui: #c6c6c6;
+  --gui-hi: #ffffff;   /* 受光边（左上） */
+  --gui-lo: #8b8b8b;   /* 背光边（右下） */
+  --gui-line: #1a1a1a; /* 外描边 */
+  --gui-dark: #3f3f3f; /* 面板深色标题条 */
+  --gui-dark-line: #2a2a2a;
+
+  /* ---------- 按钮 ---------- */
+  --btn: #8b8b8b;
+  --btn-hover: #a3a3a3;
+  --btn-text: #ffffff;
+  --btn-edge: #4c4c4c;      /* 按钮暗边 */
+  --btn-highlight: #ffffa0; /* hover 高亮描边 */
+
+  /* ---------- 输入槽 ---------- */
+  --slot: #000000;
+  --slot-hi: #ffffff;
+  --slot-lo: #8b8b8b;
+  --slot-placeholder: #6b6b6b;
+  --slot-selection: #4a7d2a;
+
+  /* ---------- 场景 ---------- */
+  --sky-top: #5b8dd9;
+  --sky-mid: #7fb0ee;
+  --sky-low: #cfe3ff;
+  --sky-bottom: #eaf3ff;
+  --grass: #5fa336;
+  --grass-light: #74c042;
+  --grass-line: #47801f;
+  --dirt: #8b6239;
+  --dirt-dark: #6f4d2c;
+
+  /* ---------- 状态色 ---------- */
+  --accent: #6ee04f; /* 草绿 / 经验条绿 */
+  --accent-soft: rgba(110, 224, 79, 0.28);
+  --accent-ring: rgba(110, 224, 79, 0.35);
+  --danger: #d32f2f;
+  --danger-soft: rgba(211, 47, 47, 0.25);
+  --link: #1a5fb4;
+  --link-hover: #0f3f7d;
+  --link-underline: rgba(26, 95, 180, 0.35);
+  --splash: #ffff55;
+
+  /* ---------- 文本（面板内深色 + 浮雕） ---------- */
+  --ink: #3f3f3f;
+  --ink-emboss: 1px 1px 0 rgba(255, 255, 255, 0.65);
+
+  /* ---------- 投影 ---------- */
+  --shadow: 2px 2px 0 #3f3f3f;      /* 像素文字投影 */
+  --shadow-lg: 3px 3px 0 #3f3f3f;
+
+  /* ---------- 布局 ---------- */
+  --panel-width: 460px;
+  --panel-pad: 24px;
+}
+
+/* 窄屏下收窄面板内边距，供各组件统一引用 */
+@media (max-width: 640px) {
+  :root {
+    --panel-pad: 16px;
+  }
+}
