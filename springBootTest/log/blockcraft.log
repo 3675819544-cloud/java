@@ -1,0 +1,203 @@
+2026-10-12 10:57:10.499 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarting 53 - Starting SpringBootTestApplication using Java 21.0.10 with PID 10988 (D:\workSpace\springBootTest\target\classes started by Administrator in D:\workSpace\springBootTest)
+2026-10-12 10:57:10.501 DEBUG [restartedMain] c.f.s.SpringBootTestApplication.logStarting 54 - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-10-12 10:57:10.502 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStartupProfileInfo 658 - The following 1 profile is active: "dev"
+2026-10-12 10:57:10.607 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-12 10:57:10.607 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-12 10:57:10.729 WARN  [restartedMain] o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext.refresh 635 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to parse configuration class [com.fenglin.springboottest.SpringBootTestApplication]
+2026-10-12 10:57:10.936 ERROR [restartedMain] o.springframework.boot.SpringApplication.reportFailure 858 - Application run failed
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to parse configuration class [com.fenglin.springboottest.SpringBootTestApplication]
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:194)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:418)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:290)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:791)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:609)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1362)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1351)
+	at com.fenglin.springboottest.SpringBootTestApplication.main(SpringBootTestApplication.java:23)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+Caused by: org.springframework.context.annotation.ConflictingBeanDefinitionException: Annotation-specified bean name 'userController' for bean class [com.fenglin.springboottest.UserController] conflicts with existing, non-compatible bean definition of same name and class [com.fenglin.springboottest.controller.UserController]
+	at org.springframework.context.annotation.ClassPathBeanDefinitionScanner.checkCandidate(ClassPathBeanDefinitionScanner.java:361)
+	at org.springframework.context.annotation.ClassPathBeanDefinitionScanner.doScan(ClassPathBeanDefinitionScanner.java:288)
+	at org.springframework.context.annotation.ComponentScanAnnotationParser.parse(ComponentScanAnnotationParser.java:128)
+	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:346)
+	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:281)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:204)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:172)
+	... 16 common frames omitted
+2026-10-12 10:57:51.254 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarting 53 - Starting SpringBootTestApplication using Java 21.0.10 with PID 8116 (D:\workSpace\springBootTest\target\classes started by Administrator in D:\workSpace\springBootTest)
+2026-10-12 10:57:51.256 DEBUG [restartedMain] c.f.s.SpringBootTestApplication.logStarting 54 - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-10-12 10:57:51.257 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStartupProfileInfo 658 - The following 1 profile is active: "dev"
+2026-10-12 10:57:51.301 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-12 10:57:51.301 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-12 10:57:52.365 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.initialize 111 - Tomcat initialized with port 60471 (http)
+2026-10-12 10:57:52.380 INFO  [restartedMain] o.apache.catalina.core.StandardService.log 168 - Starting service [Tomcat]
+2026-10-12 10:57:52.380 INFO  [restartedMain] org.apache.catalina.core.StandardEngine.log 168 - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-10-12 10:57:52.431 INFO  [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring embedded WebApplicationContext
+2026-10-12 10:57:52.432 INFO  [restartedMain] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext 301 - Root WebApplicationContext: initialization completed in 1130 ms
+2026-10-12 10:57:52.866 INFO  [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping.<init> 59 - Adding welcome page: class path resource [static/index.html]
+2026-10-12 10:57:53.161 INFO  [restartedMain] o.s.b.d.a.OptionalLiveReloadServer.startServer 59 - LiveReload server is running on port 35729
+2026-10-12 10:57:53.177 WARN  [restartedMain] o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext.refresh 635 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-10-12 10:57:53.188 INFO  [restartedMain] o.s.b.a.l.ConditionEvaluationReportLogger.logMessage 82 - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-10-12 10:57:53.210 ERROR [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter.report 40 - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 60471 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 60471 or configure this application to listen on another port.
+
+2026-10-12 11:00:10.825 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarting 53 - Starting SpringBootTestApplication using Java 21.0.10 with PID 6352 (D:\workSpace\springBootTest\target\classes started by Administrator in D:\workSpace\springBootTest)
+2026-10-12 11:00:10.826 DEBUG [restartedMain] c.f.s.SpringBootTestApplication.logStarting 54 - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-10-12 11:00:10.827 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStartupProfileInfo 658 - The following 1 profile is active: "dev"
+2026-10-12 11:00:10.871 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-12 11:00:10.871 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-12 11:00:11.836 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.initialize 111 - Tomcat initialized with port 8081 (http)
+2026-10-12 11:00:11.850 INFO  [restartedMain] o.apache.catalina.core.StandardService.log 168 - Starting service [Tomcat]
+2026-10-12 11:00:11.850 INFO  [restartedMain] org.apache.catalina.core.StandardEngine.log 168 - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-10-12 11:00:11.897 INFO  [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring embedded WebApplicationContext
+2026-10-12 11:00:11.897 INFO  [restartedMain] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext 301 - Root WebApplicationContext: initialization completed in 1025 ms
+2026-10-12 11:00:12.275 INFO  [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping.<init> 59 - Adding welcome page: class path resource [static/index.html]
+2026-10-12 11:00:12.536 INFO  [restartedMain] o.s.b.d.a.OptionalLiveReloadServer.startServer 59 - LiveReload server is running on port 35729
+2026-10-12 11:00:12.567 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.start 243 - Tomcat started on port 8081 (http) with context path '/'
+2026-10-12 11:00:12.574 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarted 59 - Started SpringBootTestApplication in 2.123 seconds (process running for 2.464)
+2026-10-12 11:00:12.577 INFO  [restartedMain] c.f.s.SpringBootTestApplication.main 29 - 
+----------------------------------------------------------
+  BlockCraft 后端启动成功！
+  环境      : dev
+  本地地址  : http://localhost:8081
+  登录接口  : http://localhost:8081/api/auth/login
+  验证码    : http://localhost:8081/api/auth/captcha
+----------------------------------------------------------
+2026-10-12 11:00:13.947 INFO  [http-nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-12 11:00:13.948 INFO  [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet.initServletBean 532 - Initializing Servlet 'dispatcherServlet'
+2026-10-12 11:00:13.948 INFO  [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet.initServletBean 554 - Completed initialization in 0 ms
+2026-10-12 11:01:06.203 INFO  [http-nio-8081-exec-7] com.zaxxer.hikari.HikariDataSource.getConnection 109 - BlockCraftHikariPool - Starting...
+2026-10-12 11:01:06.344 INFO  [http-nio-8081-exec-7] com.zaxxer.hikari.pool.HikariPool.checkFailFast 554 - BlockCraftHikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@293a445
+2026-10-12 11:01:06.345 INFO  [http-nio-8081-exec-7] com.zaxxer.hikari.HikariDataSource.getConnection 122 - BlockCraftHikariPool - Start completed.
+2026-10-12 11:01:06.401 WARN  [http-nio-8081-exec-7] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [POST] /api/auth/login -> 密码错误，请重新输入
+2026-10-12 11:01:06.402 WARN  [http-nio-8081-exec-7] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 密码错误，请重新输入]
+2026-10-12 11:01:06.553 WARN  [http-nio-8081-exec-2] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [POST] /api/auth/login -> 该账号不存在，请先注册
+2026-10-12 11:01:06.554 WARN  [http-nio-8081-exec-2] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 该账号不存在，请先注册]
+2026-10-12 11:01:06.719 WARN  [http-nio-8081-exec-4] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [POST] /api/auth/register -> 验证码不正确
+2026-10-12 11:01:06.720 WARN  [http-nio-8081-exec-4] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 验证码不正确]
+2026-10-12 11:01:07.185 WARN  [http-nio-8081-exec-3] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [POST] /api/auth/register -> 验证码已过期，请点击图片刷新
+2026-10-12 11:01:07.185 WARN  [http-nio-8081-exec-3] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 验证码已过期，请点击图片刷新]
+2026-10-12 11:01:07.335 WARN  [http-nio-8081-exec-6] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [POST] /api/auth/register -> 验证码已过期，请点击图片刷新
+2026-10-12 11:01:07.335 WARN  [http-nio-8081-exec-6] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 验证码已过期，请点击图片刷新]
+2026-10-12 11:01:07.484 WARN  [http-nio-8081-exec-10] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [POST] /api/auth/login -> 该账号不存在，请先注册
+2026-10-12 11:01:07.484 WARN  [http-nio-8081-exec-10] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 该账号不存在，请先注册]
+2026-10-12 11:01:08.087 WARN  [http-nio-8081-exec-5] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [GET] /api/user/info -> 登录状态已失效，请重新登录
+2026-10-12 11:01:08.089 WARN  [http-nio-8081-exec-5] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 登录状态已失效，请重新登录]
+2026-10-12 11:01:08.235 WARN  [http-nio-8081-exec-4] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [GET] /api/user/info -> 登录状态已失效，请重新登录
+2026-10-12 11:01:08.236 WARN  [http-nio-8081-exec-4] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 登录状态已失效，请重新登录]
+2026-10-12 11:01:08.388 WARN  [http-nio-8081-exec-7] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [GET] /api/user/info -> 登录状态已失效，请重新登录
+2026-10-12 11:01:08.389 WARN  [http-nio-8081-exec-7] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 登录状态已失效，请重新登录]
+2026-10-12 11:01:35.748 INFO  [http-nio-8081-exec-4] c.f.s.service.impl.UserServiceImpl.register 78 - 新用户注册成功: id=3, username=Alex
+2026-10-12 11:01:35.925 INFO  [http-nio-8081-exec-8] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=3, username=Alex, ip=127.0.0.1
+2026-10-12 11:04:34.800 INFO  [http-nio-8081-exec-7] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=1, username=Steve, ip=127.0.0.1
+2026-10-12 11:04:54.492 INFO  [http-nio-8081-exec-5] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=1, username=Steve, ip=127.0.0.1
+2026-10-12 11:04:54.645 INFO  [http-nio-8081-exec-9] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=1, username=Steve, ip=127.0.0.1
+2026-10-12 11:09:10.042 INFO  [http-nio-8081-exec-9] c.f.s.service.impl.UserServiceImpl.register 78 - 新用户注册成功: id=4, username=111
+2026-10-12 11:10:00.370 INFO  [http-nio-8081-exec-8] c.f.s.service.impl.UserServiceImpl.register 78 - 新用户注册成功: id=5, username=222
+2026-10-12 11:10:33.711 INFO  [http-nio-8081-exec-10] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=4, username=111, ip=127.0.0.1
+2026-10-12 11:42:10.568 INFO  [http-nio-8081-exec-5] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=1, username=Steve, ip=127.0.0.1
+2026-10-12 11:42:11.274 WARN  [http-nio-8081-exec-10] c.f.s.common.GlobalExceptionHandler.handleBusinessException 29 - 业务异常 [GET] /api/user/info -> 登录状态已失效，请重新登录
+2026-10-12 11:42:11.275 WARN  [http-nio-8081-exec-10] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 登录状态已失效，请重新登录]
+2026-10-12 11:50:03.547 INFO  [File Watcher] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener.onApplicationEvent 211 - Restarting due to 27 class path changes (0 additions, 27 deletions, 0 modifications)
+2026-10-12 11:50:03.550 INFO  [Thread-5] o.s.b.w.embedded.tomcat.GracefulShutdown.shutDownGracefully 54 - Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-12 11:50:03.553 INFO  [tomcat-shutdown] o.s.b.w.embedded.tomcat.GracefulShutdown.doShutdown 76 - Graceful shutdown complete
+2026-10-12 11:50:03.558 INFO  [Thread-5] com.zaxxer.hikari.HikariDataSource.close 349 - BlockCraftHikariPool - Shutdown initiated...
+2026-10-12 11:50:03.558 INFO  [Thread-5] com.zaxxer.hikari.HikariDataSource.close 351 - BlockCraftHikariPool - Shutdown completed.
+2026-10-12 11:50:03.659 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarting 53 - Starting SpringBootTestApplication using Java 21.0.10 with PID 6352 (D:\workSpace\springBootTest\target\classes started by Administrator in D:\workSpace\springBootTest)
+2026-10-12 11:50:03.659 DEBUG [restartedMain] c.f.s.SpringBootTestApplication.logStarting 54 - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-10-12 11:50:03.659 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStartupProfileInfo 658 - The following 1 profile is active: "dev"
+2026-10-12 11:50:03.895 WARN  [restartedMain] o.m.spring.mapper.ClassPathMapperScanner.warn 44 - No MyBatis mapper was found in '[com.fenglin.springboottest.mapper]' package. Please check your configuration.
+2026-10-12 11:50:03.958 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.initialize 111 - Tomcat initialized with port 8081 (http)
+2026-10-12 11:50:03.963 INFO  [restartedMain] o.apache.catalina.core.StandardService.log 168 - Starting service [Tomcat]
+2026-10-12 11:50:03.963 INFO  [restartedMain] org.apache.catalina.core.StandardEngine.log 168 - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-10-12 11:50:03.991 INFO  [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring embedded WebApplicationContext
+2026-10-12 11:50:03.991 INFO  [restartedMain] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext 301 - Root WebApplicationContext: initialization completed in 327 ms
+2026-10-12 11:50:04.036 INFO  [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping.<init> 59 - Adding welcome page: class path resource [static/index.html]
+2026-10-12 11:50:04.172 INFO  [restartedMain] o.s.b.d.a.OptionalLiveReloadServer.startServer 59 - LiveReload server is running on port 35729
+2026-10-12 11:50:04.187 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.start 243 - Tomcat started on port 8081 (http) with context path '/'
+2026-10-12 11:50:04.189 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarted 59 - Started SpringBootTestApplication in 0.581 seconds (process running for 2994.079)
+2026-10-12 11:50:04.190 INFO  [restartedMain] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener.onApplicationEvent 63 - Condition evaluation unchanged
+2026-10-12 11:50:04.192 INFO  [restartedMain] c.f.s.SpringBootTestApplication.main 29 - 
+----------------------------------------------------------
+  BlockCraft 后端启动成功！
+  环境      : dev
+  本地地址  : http://localhost:8081
+  登录接口  : http://localhost:8081/api/auth/login
+  验证码    : http://localhost:8081/api/auth/captcha
+----------------------------------------------------------
+2026-10-12 11:50:07.058 INFO  [File Watcher] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener.onApplicationEvent 211 - Restarting due to 29 class path changes (27 additions, 0 deletions, 2 modifications)
+2026-10-12 11:50:07.062 INFO  [Thread-7] o.s.b.w.embedded.tomcat.GracefulShutdown.shutDownGracefully 54 - Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-12 11:50:07.064 INFO  [tomcat-shutdown] o.s.b.w.embedded.tomcat.GracefulShutdown.doShutdown 76 - Graceful shutdown complete
+2026-10-12 11:50:07.137 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarting 53 - Starting SpringBootTestApplication using Java 21.0.10 with PID 6352 (D:\workSpace\springBootTest\target\classes started by Administrator in D:\workSpace\springBootTest)
+2026-10-12 11:50:07.137 DEBUG [restartedMain] c.f.s.SpringBootTestApplication.logStarting 54 - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-10-12 11:50:07.137 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStartupProfileInfo 658 - The following 1 profile is active: "dev"
+2026-10-12 11:50:07.380 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.initialize 111 - Tomcat initialized with port 8081 (http)
+2026-10-12 11:50:07.381 INFO  [restartedMain] o.apache.catalina.core.StandardService.log 168 - Starting service [Tomcat]
+2026-10-12 11:50:07.381 INFO  [restartedMain] org.apache.catalina.core.StandardEngine.log 168 - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-10-12 11:50:07.407 INFO  [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring embedded WebApplicationContext
+2026-10-12 11:50:07.408 INFO  [restartedMain] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext 301 - Root WebApplicationContext: initialization completed in 269 ms
+2026-10-12 11:50:07.536 INFO  [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping.<init> 59 - Adding welcome page: class path resource [static/index.html]
+2026-10-12 11:50:07.602 INFO  [restartedMain] o.s.b.d.a.OptionalLiveReloadServer.startServer 59 - LiveReload server is running on port 35729
+2026-10-12 11:50:07.613 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.start 243 - Tomcat started on port 8081 (http) with context path '/'
+2026-10-12 11:50:07.615 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarted 59 - Started SpringBootTestApplication in 0.519 seconds (process running for 2997.505)
+2026-10-12 11:50:07.616 INFO  [restartedMain] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener.onApplicationEvent 63 - Condition evaluation unchanged
+2026-10-12 11:50:07.616 INFO  [restartedMain] c.f.s.SpringBootTestApplication.main 29 - 
+----------------------------------------------------------
+  BlockCraft 后端启动成功！
+  环境      : dev
+  本地地址  : http://localhost:8081
+  登录接口  : http://localhost:8081/api/auth/login
+  验证码    : http://localhost:8081/api/auth/captcha
+----------------------------------------------------------
+2026-10-12 11:50:57.201 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarting 53 - Starting SpringBootTestApplication using Java 21.0.10 with PID 6412 (D:\workSpace\springBootTest\target\classes started by Administrator in D:\workSpace\springBootTest)
+2026-10-12 11:50:57.203 DEBUG [restartedMain] c.f.s.SpringBootTestApplication.logStarting 54 - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-10-12 11:50:57.203 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStartupProfileInfo 658 - The following 1 profile is active: "dev"
+2026-10-12 11:50:57.248 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-12 11:50:57.249 INFO  [restartedMain] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor.logTo 252 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-12 11:50:58.257 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.initialize 111 - Tomcat initialized with port 8081 (http)
+2026-10-12 11:50:58.273 INFO  [restartedMain] o.apache.catalina.core.StandardService.log 168 - Starting service [Tomcat]
+2026-10-12 11:50:58.273 INFO  [restartedMain] org.apache.catalina.core.StandardEngine.log 168 - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-10-12 11:50:58.323 INFO  [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring embedded WebApplicationContext
+2026-10-12 11:50:58.324 INFO  [restartedMain] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext 301 - Root WebApplicationContext: initialization completed in 1075 ms
+2026-10-12 11:50:58.747 INFO  [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping.<init> 59 - Adding welcome page: class path resource [static/index.html]
+2026-10-12 11:50:59.020 INFO  [restartedMain] o.s.b.d.a.OptionalLiveReloadServer.startServer 59 - LiveReload server is running on port 35729
+2026-10-12 11:50:59.041 INFO  [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer.start 243 - Tomcat started on port 8081 (http) with context path '/'
+2026-10-12 11:50:59.041 INFO  [restartedMain] c.f.s.SpringBootTestApplication.logStarted 59 - Started SpringBootTestApplication in 2.234 seconds (process running for 2.605)
+2026-10-12 11:50:59.060 INFO  [restartedMain] c.f.s.SpringBootTestApplication.main 29 - 
+----------------------------------------------------------
+  BlockCraft 后端启动成功！
+  环境      : dev
+  本地地址  : http://localhost:8081
+  登录接口  : http://localhost:8081/api/auth/login
+  验证码    : http://localhost:8081/api/auth/captcha
+----------------------------------------------------------
+2026-10-12 11:51:07.603 INFO  [http-nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/].log 168 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-12 11:51:07.603 INFO  [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet.initServletBean 532 - Initializing Servlet 'dispatcherServlet'
+2026-10-12 11:51:07.604 INFO  [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet.initServletBean 554 - Completed initialization in 1 ms
+2026-10-12 11:51:07.841 WARN  [http-nio-8081-exec-2] c.f.s.common.GlobalExceptionHandler.handleBusinessException 32 - 业务异常 [GET] /api/user/info -> 登录状态已失效，请重新登录
+2026-10-12 11:51:07.846 WARN  [http-nio-8081-exec-2] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.logException 254 - Resolved [com.fenglin.springboottest.common.BusinessException: 登录状态已失效，请重新登录]
+2026-10-12 11:51:08.136 INFO  [http-nio-8081-exec-6] com.zaxxer.hikari.HikariDataSource.getConnection 109 - BlockCraftHikariPool - Starting...
+2026-10-12 11:51:08.267 INFO  [http-nio-8081-exec-6] com.zaxxer.hikari.pool.HikariPool.checkFailFast 554 - BlockCraftHikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@4708eb1f
+2026-10-12 11:51:08.269 INFO  [http-nio-8081-exec-6] com.zaxxer.hikari.HikariDataSource.getConnection 122 - BlockCraftHikariPool - Start completed.
+2026-10-12 11:51:08.345 INFO  [http-nio-8081-exec-6] c.f.s.service.impl.UserServiceImpl.login 117 - 用户登录成功: id=1, username=Steve, ip=127.0.0.1
