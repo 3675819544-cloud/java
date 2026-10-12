@@ -1,5 +1,7 @@
 import { reactive, ref } from 'vue'
 
+import { authApi } from '@/api'
+import { RESULT_CODE } from '@/constants/api'
 import { SITE } from '@/constants/site'
 import { useProgress } from '@/composables/useProgress'
 import { useToast } from '@/composables/useToast'
@@ -24,13 +26,17 @@ const RULES = {
 /**
  * 注册表单状态机（结构与 useLoginForm 对齐）
  *
+ * 验证码改为**服务端校验**：前端只负责「非空」，
+ * 真正的比对发生在后端（POST /api/auth/register 里带 captchaId + captchaCode），
+ * 这样前端 JS 被改了也刷不出正确答案。
+ *
  * @param {{
  *   onRegistered?: (payload: { username: string }) => void,
- *   getCaptcha: () => string,
+ *   getCaptchaId: () => string,
  *   refreshCaptcha: () => void,
  * }} options
  */
-export function useRegisterForm({ onRegistered, getCaptcha, refreshCaptcha } = {}) {
+export function useRegisterForm({ onRegistered, getCaptchaId, refreshCaptcha } = {}) {
   /* ---------------- 状态 ---------------- */
   const form = reactive({
     username: '',
@@ -52,7 +58,7 @@ export function useRegisterForm({ onRegistered, getCaptcha, refreshCaptcha } = {
   const passwordType = ref('password')
   const toggleLabel = ref('显示')
 
-  const { percent, start: startProgress } = useProgress(SITE.registerDuration)
+  const { percent, start: startProgress, stop: stopProgress } = useProgress(SITE.registerDuration)
   const { show } = useToast()
 
   /* ---------------- 校验 ---------------- */
@@ -74,19 +80,9 @@ export function useRegisterForm({ onRegistered, getCaptcha, refreshCaptcha } = {
     errors[name] = ''
   }
 
-  /** 校验图片验证码：必填 + 与当前码一致（不区分大小写） */
+  /** 图片验证码：前端只校验必填，正确性交给后端 */
   function validateCaptcha() {
-    const ok = validateField('captcha')
-    if (!ok) return false
-
-    const expected = (getCaptcha() ?? '').trim().toLowerCase()
-    const input = form.captcha.trim().toLowerCase()
-    if (input !== expected) {
-      errors.captcha = '验证码不正确'
-      refreshCaptcha?.() // 答错自动换一张
-      return false
-    }
-    return true
+    return validateField('captcha')
   }
 
   /* ---------------- 密码可见性 ---------------- */
@@ -98,10 +94,33 @@ export function useRegisterForm({ onRegistered, getCaptcha, refreshCaptcha } = {
   }
 
   /* ---------------- 提交 ---------------- */
+  /** 各错误码 -> 对应输入框 + 是否需要换一张验证码 */
+  function applyServerError(error) {
+    switch (error?.code) {
+      case RESULT_CODE.USERNAME_EXISTS:
+        errors.username = error.message
+        return 'username'
+      case RESULT_CODE.PASSWORD_NOT_MATCH:
+        errors.confirm = error.message
+        return 'confirm'
+      case RESULT_CODE.CAPTCHA_ERROR:
+      case RESULT_CODE.CAPTCHA_EXPIRED:
+        errors.captcha = error.message
+        refreshCaptcha?.() // 答错 / 过期自动换一张
+        return 'captcha'
+      case RESULT_CODE.PARAM_ERROR:
+        // 后端 @Valid 拦下来的参数问题，尽量落到对应框
+        errors.username = error.message
+        return 'username'
+      default:
+        return null
+    }
+  }
+
   /**
-   * @returns {{ ok: boolean, focus?: 'username' | 'password' | 'confirm' | 'captcha' }}
+   * @returns {Promise<{ ok: boolean, focus?: 'username'|'password'|'confirm'|'captcha', error?: Error }>}
    */
-  function submit() {
+  async function submit() {
     if (submitting.value) return { ok: false }
 
     const okUser = validateField('username')
@@ -122,15 +141,28 @@ export function useRegisterForm({ onRegistered, getCaptcha, refreshCaptcha } = {
 
     submitting.value = true
 
-    // TODO: 此处替换为真实注册请求
-    // const res = await fetch('/api/register', { method: 'POST', body: ... })
-    startProgress(() => {
+    const progress = new Promise((resolve) => startProgress(resolve))
+
+    try {
+      await authApi.register({
+        username: form.username.trim(),
+        password: form.password,
+        confirmPassword: form.confirm,
+        captchaId: getCaptchaId?.() ?? '',
+        captchaCode: form.captcha.trim(),
+      })
+
+      await progress
+
       submitting.value = false
       show(SITE.registerSuccessMessage)
       onRegistered?.({ username: form.username.trim() })
-    })
-
-    return { ok: true }
+      return { ok: true }
+    } catch (error) {
+      stopProgress()
+      submitting.value = false
+      return { ok: false, focus: applyServerError(error), error }
+    }
   }
 
   return {

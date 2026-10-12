@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import PixelButton from '@/components/PixelButton.vue'
 import PixelCheckbox from '@/components/PixelCheckbox.vue'
@@ -10,6 +11,7 @@ import { useLoginForm } from '@/composables/useLoginForm'
 import { useToast } from '@/composables/useToast'
 
 const { show } = useToast()
+const router = useRouter()
 
 /**
  * 表单状态、校验、进度条、记住我全部由 composable 提供，
@@ -28,7 +30,11 @@ const {
   restoreRemembered,
   submit,
 } = useLoginForm({
-  onAuthenticated: () => show(SITE.successMessage),
+  onAuthenticated: () => {
+    show(SITE.successMessage)
+    // 登录成功进入主页；路由守卫会兜底：未登录会被踢回 /login
+    router.replace('/home')
+  },
 })
 
 /* 模板引用：校验失败 / 切换密码可见性后要把光标送回去 */
@@ -42,9 +48,16 @@ onMounted(() => {
   if (restored) passwordRef.value?.focus()
 })
 
-function onSubmit() {
-  const result = submit()
+async function onSubmit() {
+  // submit() 内部会请求 POST /api/auth/login，并负责保存 token
+  const result = await submit()
   if (result.ok) return
+
+  // 没有落到具体输入框的错误（比如后端没启动）用顶部提示条告知
+  if (!result.focus) {
+    if (result.error) show(result.error.message)
+    return
+  }
 
   if (result.focus === 'account') accountRef.value?.focus()
   else if (result.focus === 'password') passwordRef.value?.focus()

@@ -9,15 +9,17 @@ import PixelField from '@/components/PixelField.vue'
 import PixelInput from '@/components/PixelInput.vue'
 import { SITE } from '@/constants/site'
 import { useRegisterForm } from '@/composables/useRegisterForm'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
+const { show } = useToast()
 
-/* 图片验证码当前正确码，由 CaptchaImage 的 change 事件回写 */
-const captchaCode = ref('')
+/* 图片验证码凭证，由 CaptchaImage 的 change 事件回写（明文答案在后端，前端拿不到） */
+const captchaId = ref('')
 const captchaRef = ref(null)
 
-function onCaptchaChange(code) {
-  captchaCode.value = code
+function onCaptchaChange(id) {
+  captchaId.value = id
 }
 
 function refreshCaptcha() {
@@ -37,7 +39,7 @@ const {
   togglePassword,
   submit,
 } = useRegisterForm({
-  getCaptcha: () => captchaCode.value,
+  getCaptchaId: () => captchaId.value,
   refreshCaptcha,
   onRegistered: () => {
     // 注册成功后跳回登录页，让用户输入新账号登录
@@ -53,9 +55,16 @@ const captchaRefInput = ref(null)
 
 onMounted(() => usernameRef.value?.focus())
 
-function onSubmit() {
-  const result = submit()
+async function onSubmit() {
+  // submit() 会真实请求 POST /api/auth/register
+  const result = await submit()
   if (result.ok) return
+
+  // 没有落到具体输入框的错误（比如后端没启动）用顶部提示条告知
+  if (!result.focus) {
+    if (result.error) show(result.error.message)
+    return
+  }
 
   switch (result.focus) {
     case 'username':

@@ -1,114 +1,77 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
+import { authApi } from '@/api'
+
 /**
- * 图片验证码（Canvas 绘制，无第三方依赖）
+ * 图片验证码（服务端生成）
  *
- * - 生成 4 位「字母 + 数字」随机码，像素风绘制在黑色凹槽里
- * - 叠加干扰线 / 噪点，保留验证码应有的「机器难认、人能读」特性
- * - 点击图片或「换一张」按钮刷新
- * - 通过 `change` 事件把当前正确码抛给父组件做校验
+ * 相比原来「Canvas 本地画码」的做法，改成了向后端领取：
+ *   GET /api/auth/captcha -> { captchaId, image, expireSeconds }
  *
- * 设计上贴合 MC 像素风：用等宽字体、关闭抗锯齿、配色取自设计令牌。
+ *  - `image` 是 data:image/png;base64 的 data URL，直接塞给 <img :src>
+ *  - `captchaId` 是这张码的凭证，通过 change 事件抛给父组件，
+ *    注册时一起提交，由后端比对——前端拿不到明文答案
+ *  - 点击图片 / 「换一张」都会重新领取，旧凭证在后端随即失效
+ *
+ * 保留原版的像素风：2 倍图 + image-rendering: pixelated + 凹槽边框。
  */
 
 const emit = defineEmits(['change'])
 
-/** 可选字符：去掉易混的 0/O、1/I/L */
-const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-const LENGTH = 4
+const loading = ref(false)
+const src = ref('')
+const failed = ref(false)
 
-const canvas = ref(null)
-/** 当前正确码，父组件比对时用 */
-const code = ref('')
+/** 当前验证码凭证 */
+let captchaId = ''
 
-function randomChar() {
-  return CHARS[Math.floor(Math.random() * CHARS.length)]
-}
+async function refresh() {
+  if (loading.value) return
 
-function generate() {
-  let next = ''
-  for (let i = 0; i < LENGTH; i++) next += randomChar()
-  code.value = next
-  draw(next)
-  emit('change', next)
-}
-
-/**
- * 在 canvas 上绘制验证码
- * 用 2x 物理像素缩放，配合 image-rendering: pixelated 得到硬边像素感。
- */
-function draw(text) {
-  const cv = canvas.value
-  if (!cv) return
-
-  const w = 120
-  const h = 46
-  const dpr = 2
-  cv.width = w * dpr
-  cv.height = h * dpr
-  cv.style.width = `${w}px`
-  cv.style.height = `${h}px`
-
-  const ctx = cv.getContext('2d')
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-  ctx.imageSmoothingEnabled = false
-
-  // 凹槽黑底
-  ctx.fillStyle = '#000000'
-  ctx.fillRect(0, 0, w, h)
-
-  // 噪点（随机亮色像素，干扰 OCR）
-  const noiseColors = ['#3a3a3a', '#4c4c4c', '#5a5a5a']
-  for (let i = 0; i < 90; i++) {
-    ctx.fillStyle = noiseColors[Math.floor(Math.random() * noiseColors.length)]
-    ctx.fillRect(Math.floor(Math.random() * w), Math.floor(Math.random() * h), 1, 1)
-  }
-
-  // 干扰线（3 条，随机颜色）
-  const lineColors = ['#6ee04f', '#5b8dd9', '#ffff55', '#74c042']
-  for (let i = 0; i < 3; i++) {
-    ctx.strokeStyle = lineColors[Math.floor(Math.random() * lineColors.length)]
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(Math.random() * w, Math.random() * h)
-    ctx.lineTo(Math.random() * w, Math.random() * h)
-    ctx.stroke()
-  }
-
-  // 逐字符绘制，带随机偏移与颜色，增加辨识难度
-  const charColors = ['#6ee04f', '#cfe3ff', '#ffff55', '#74c042', '#ffffff']
-  ctx.textBaseline = 'middle'
-  ctx.font = 'bold 22px "Press Start 2P", monospace'
-
-  const step = w / (text.length + 1)
-  for (let i = 0; i < text.length; i++) {
-    const x = step * (i + 1)
-    const y = h / 2 + (Math.random() * 8 - 4)
-    ctx.save()
-    ctx.translate(x, y)
-    ctx.rotate((Math.random() - 0.5) * 0.5)
-    ctx.fillStyle = charColors[Math.floor(Math.random() * charColors.length)]
-    // 左对齐锚点，逐个居中
-    ctx.fillText(text[i], -11, 0)
-    ctx.restore()
+  loading.value = true
+  try {
+    const data = await authApi.captcha()
+    src.value = data.image
+    captchaId = data.captchaId
+    failed.value = false
+    emit('change', captchaId)
+  } catch {
+    src.value = ''
+    captchaId = ''
+    failed.value = true
+    emit('change', '')
+  } finally {
+    loading.value = false
   }
 }
 
-onMounted(generate)
+function onClick() {
+  // 失败状态下点击也重试
+  refresh()
+}
 
-/** 暴露给父组件，答错验证码时主动刷新 */
-defineExpose({ refresh: generate })
+defineExpose({ refresh, getCaptchaId: () => captchaId })
+
+onMounted(refresh)
 </script>
 
 <template>
   <button
     type="button"
     class="captcha"
-    aria-label="点击刷新验证码"
-    @click="generate"
+    :class="{ 'is-loading': loading }"
+    :aria-label="failed ? '验证码加载失败，点击重试' : '点击刷新验证码'"
+    @click="onClick"
   >
-    <canvas ref="canvas" class="captcha-canvas" />
+    <span class="captcha-box">
+      <img v-if="src" class="captcha-img" :src="src" alt="验证码" />
+
+      <span v-else class="captcha-placeholder">
+        {{ failed ? '加载失败，点击重试' : '加载中…' }}
+      </span>
+    </span>
+
     <span class="captcha-refresh">换一张</span>
   </button>
 </template>
@@ -124,13 +87,37 @@ defineExpose({ refresh: generate })
   cursor: pointer;
 }
 
-/* 验证码画布：复用 MC 文本凹槽质感 */
-.captcha-canvas {
+/* 验证码画布容器：复用 MC 文本凹槽质感 */
+.captcha-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 120px;
   height: 46px;
+  overflow: hidden;
+  background: #000;
   border: 2px solid;
   border-color: var(--slot-lo) var(--slot-hi) var(--slot-hi) var(--slot-lo);
+}
+
+.captcha-img {
+  display: block;
+  width: 120px;
+  height: 46px;
+  /* 关掉浏览器平滑，保持像素硬边 */
   image-rendering: pixelated;
+}
+
+.captcha-placeholder {
+  padding: 0 4px;
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+  color: #9a9a9a;
+}
+
+.captcha.is-loading {
+  cursor: progress;
 }
 
 .captcha-refresh {
@@ -138,6 +125,7 @@ defineExpose({ refresh: generate })
   color: var(--link);
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
   border-bottom: 2px solid var(--link-underline);
+  white-space: nowrap;
 }
 
 .captcha-refresh:hover {

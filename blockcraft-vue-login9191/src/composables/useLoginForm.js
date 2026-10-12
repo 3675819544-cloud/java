@@ -1,7 +1,10 @@
 import { computed, reactive, ref } from 'vue'
 
+import { authApi } from '@/api'
+import { RESULT_CODE } from '@/constants/api'
 import { SITE } from '@/constants/site'
 import { useProgress } from '@/composables/useProgress'
+import { saveSession } from '@/utils/auth'
 import {
   readStored,
   removeStored,
@@ -26,10 +29,11 @@ const RULES = {
 /**
  * 登录表单状态机
  *
- * 把原来 script.js 里的「查 DOM → 加 class → 写 textContent」
- * 全部改写成「改状态 → 视图自动更新」。
+ * 提交链路：前端校验 -> POST /api/auth/login -> 保存 token -> 播放进度条 -> 回调
+ * 进度条是装饰性的（「加载世界中…」），所以让它和接口请求并行，
+ * 谁慢等谁，接口报错时立刻中断动画并显示错误，不让用户白等 1.4 秒。
  *
- * @param {{ onAuthenticated?: (payload: { account: string }) => void }} options
+ * @param {{ onAuthenticated?: (payload: { user: object }) => void }} options
  */
 export function useLoginForm({ onAuthenticated } = {}) {
   /* ---------------- 状态 ---------------- */
@@ -47,7 +51,7 @@ export function useLoginForm({ onAuthenticated } = {}) {
   const showPassword = ref(false)
   const submitting = ref(false)
 
-  const { percent, start: startProgress } = useProgress(SITE.loginDuration)
+  const { percent, start: startProgress, stop: stopProgress } = useProgress(SITE.loginDuration)
 
   /* ---------------- 派生状态 ---------------- */
   const passwordType = computed(() => (showPassword.value ? 'text' : 'password'))
@@ -101,10 +105,28 @@ export function useLoginForm({ onAuthenticated } = {}) {
   }
 
   /* ---------------- 提交 ---------------- */
+  /** 把服务端错误码翻译成「哪个输入框下面显示什么」 */
+  function applyServerError(error) {
+    switch (error?.code) {
+      case RESULT_CODE.USER_NOT_FOUND:
+        errors.account = error.message
+        return 'account'
+      case RESULT_CODE.USER_DISABLED:
+        errors.account = error.message
+        return 'account'
+      case RESULT_CODE.PASSWORD_ERROR:
+        errors.password = error.message
+        return 'password'
+      default:
+        // 参数错误之类直接抛给顶部提示条
+        return null
+    }
+  }
+
   /**
-   * @returns {{ ok: false, focus: 'account' | 'password' } | { ok: true }}
+   * @returns {Promise<{ ok: false, focus?: string|null, error?: Error } | { ok: true, user: object }>}
    */
-  function submit() {
+  async function submit() {
     if (submitting.value) return { ok: false, focus: null }
 
     const okAccount = validateField('account')
@@ -117,15 +139,28 @@ export function useLoginForm({ onAuthenticated } = {}) {
 
     submitting.value = true
 
-    // TODO: 此处替换为真实登录请求
-    // const res = await fetch('/api/login', { method: 'POST', body: ... })
-    startProgress(() => {
-      persistRemembered()
-      submitting.value = false
-      onAuthenticated?.({ account: form.account.trim() })
-    })
+    // 进度条与请求并行跑（谁慢等谁）
+    const progress = new Promise((resolve) => startProgress(resolve))
 
-    return { ok: true }
+    try {
+      const data = await authApi.login({
+        username: form.account.trim(),
+        password: form.password,
+      })
+
+      await progress
+
+      persistRemembered()
+      saveSession({ token: data.token, user: data.user })
+
+      submitting.value = false
+      onAuthenticated?.(data)
+      return { ok: true, user: data.user }
+    } catch (error) {
+      stopProgress()
+      submitting.value = false
+      return { ok: false, focus: applyServerError(error), error }
+    }
   }
 
   return {
