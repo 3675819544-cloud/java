@@ -1,21 +1,21 @@
 ================================================================
 BlockCraft 前端项目备忘（AI 专用）
 ================================================================
-这是前端项目（Vue3 + Vite，端口 5173）。
-
-完整的项目总备忘放在后端项目根目录：
-    D:/workSpace/springBootTest/AI_PROJECT_NOTES.txt
-下次开机请优先读那一份，里面有环境、启动脚本、踩坑、已完成项等全量信息。
+这是前端项目（Vue3 + Vite 6，端口 5173）。
+完整的项目总备忘（环境 / 启动脚本 / 踩坑 / 已完成项）放在后端项目根目录：
+    C:\Users\Administrator\Desktop\springBootTest\AI_PROJECT_NOTES.txt
+下次开机请优先读那一份（以前写的 D:/workSpace/... 路径是错的）。
 
 本前端项目要点：
-- 启动：start-frontend.bat（会先 npm install 再 npm run dev）
-- 停止：stop-frontend.bat
+- 启动：start-frontend.bat（会先 npm install 再 npm run dev；node_modules 每次开机被清空会自动重建）
+- 停止：stop-frontend.bat（按端口 5173 杀进程）
 - /api 代理已配到 http://localhost:8081（见 vite.config.js）
 - 接口层：src/api/{request,auth,index}.js
 - 登录/注册：src/composables/useLoginForm.js、useRegisterForm.js
 - 主页（登录后）：src/views/HomeView.vue，调 /api/user/info
 - 路由守卫：src/router/index.js（未登录访问 /home 会被踢回 /login）
 - 401 自动清登录态：src/main.js 注册 setUnauthorizedHandler
+- 一键启动整套（含后端）：去后端目录双击 start-all.bat
 
 注意：本机每次开机 node_modules 会被清空，start-frontend.bat 会重建。
 源码改动后用 npm run dev 看效果，npm run build 产物在 dist/。
