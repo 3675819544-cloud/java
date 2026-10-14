@@ -1,91 +1,103 @@
 ================================================================
-BlockCraft 项目备忘（AI 专用，下次开机直接读，别重新摸索）
+BlockCraft 项目备忘（AI 专用 —— 下次开机先读这份，别重新摸索）
 ================================================================
-最后更新：2026-10-12
+最后更新：2026-10-14
 适用：本机每次开机重置，node_modules 与 target 会被删除，但源代码、
-      脚本、本文件会保留。MySQL/IDEA/Maven/Java 安装保留。
+      脚本、本文件会保留。MySQL / IDEA / Maven / Java / Node 安装保留。
 
 ----------------------------------------------------------------
-1. 这两个项目是什么
+1. 这两个项目是什么（当前真实路径；以前写的 D:/workSpace、java-main 都是错的）
 ----------------------------------------------------------------
-- 后端：D:/workSpace/springBootTest
-    Spring Boot 3.4.5 + MyBatis-Plus 3.5.9 + MySQL 8.0。
-    端口 8081。负责登录/注册/验证码/用户资料。
-- 前端：C:/Users/Administrator/Desktop/java-main/blockcraft-vue-login9191
-    Vue3 + Vite。端口 5173。像素风登录/注册界面。
-    已通过 vite.config.js 的 /api 代理把请求转发到 8081。
-两个项目通过 REST 接口连通：前端登录/注册/验证码走 /api/auth/**，
+- 后端：C:\Users\Administrator\Desktop\springBootTest
+    Spring Boot 3.4.5 + MyBatis-Plus 3.5.9 + MySQL 8.0。端口 8081。
+    负责登录/注册/验证码/用户资料。
+- 前端：C:\Users\Administrator\Desktop\blockcraft-vue-login9191
+    Vue3 + Vite 6。端口 5173。像素风登录/注册界面。
+    vite.config.js 里 /api 代理指向 http://localhost:8081。
+两个项目通过 REST 连通：前端登录/注册/验证码走 /api/auth/**，
 登录后主页调 /api/user/info（JWT 鉴权）。
 
 ----------------------------------------------------------------
-2. 本机环境（重置后一般不变，变了自己改脚本顶部变量）
+2. 本机环境（重置后一般不变；若变化改脚本顶部或设环境变量）
 ----------------------------------------------------------------
-- Java：JAVA_HOME = C:\Program Files\Zulu\zulu-21
-- Maven：D:\IntelliJ IDEA 2024.3.2.2\plugins\maven\lib\maven3\bin\mvn.cmd
-         （IDEA 内置，用 PowerShell 或 .bat 调用，bash 下带空格路径会挂）
+- Java：JAVA_HOME 默认 C:\Program Files\Zulu\zulu-21（脚本会自动找）
+- Maven：优先 PATH 的 mvn；没有就自动找 IDEA 内置
+         D:\IntelliJ IDEA*\plugins\maven\lib\maven3\bin\mvn.cmd
+         （用 .bat / PowerShell 调用；bash 下带空格路径会挂）
 - MySQL 8.0：端口 3306，root / 123456
          客户端：C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe
 - Node：22（npm 可用）
-- 数据库名：blockcraft，表 t_user；演示账号 Steve/123456、Lucy/123456
+- 数据库：blockcraft，表 t_user；演示账号 Steve/123456、Lucy/123456
 
 ----------------------------------------------------------------
-3. 启动 / 停止（已写好 .bat，双击即可，已在 GBK 编码下）
+3. 启动 / 停止（脚本已用相对路径 + GBK 编码，双击即可）
 ----------------------------------------------------------------
-一键（推荐）：
-    后端根目录下的 启动全部.bat  -> 先后拉起后端+前端
-    后端根目录下的 停止全部.bat  -> 停止两者
+一键（推荐，新手直接这个）：
+    后端目录里的 start-all.bat    -> 先后拉起后端 + 前端（会先等后端约 12 秒）
+    后端目录里的 stop-all.bat     -> 一键停止两者
 单独：
     后端：start-backend.bat / stop-backend.bat
-    前端：start-frontend.bat / stop-frontend.bat
-脚本已处理“开机重置”：后端会自动检查并初始化数据库；
-前端会先 npm install 再 npm run dev。不要在脚本运行前依赖
-node_modules / target 目录。
+    前端：..\blockcraft-vue-login9191\start-frontend.bat / stop-frontend.bat
+脚本已处理“开机重置”：
+    - 后端：若 target 里的 jar 不存在就自动 mvn clean package 重建；
+            已存在则跳过（加快二次启动）。运行前不要依赖 target。
+    - 前端：若 node_modules 不存在就自动 npm install；已存在则跳过。
+            运行前不要依赖 node_modules。
 
 快速自检（后端起好后）：
-    curl http://localhost:8081/api/auth/ping  -> 应返回 pong
+    curl http://localhost:8081/api/auth/ping   -> 应返回 pong
     浏览器开 http://localhost:5173 用 Steve/123456 登录
 
 ----------------------------------------------------------------
-4. 上次踩过的坑（避免重复排查，浪费时间）
+4. 上次踩过的坑（已写进脚本自动规避，不要再花时间排查）
 ----------------------------------------------------------------
-- 沙箱/某些环境有 SERVER__PORT 环境变量会覆盖 server.port，
-  导致后端跑成随机端口。正常 IDEA/脚本里没有，遇到“端口不对”
-  先 echo %SERVER__PORT% 看看，有就 unset 掉。
-- 两个 @RestController 不能同名（都叫 UserController 会 Bean 名冲突
-  启动失败）。现已改名：AuthController（/api/auth）和
-  UserProfileController（/api/user）。别再改回同名。
+- 【必看】SERVER__PORT 环境变量覆盖 server.port：
+    本机/沙箱预设了 SERVER__PORT=56187（沙箱自己的端口，已被占用），
+    Spring Boot 会读它，导致后端起在 56187 而启动失败（Address already in use）。
+    脚本已在启动前 set SERVER__PORT= 清空，并 --server.port=8081 钉死。
+    若手动 java -jar 一定要先 unset SERVER__PORT，否则必炸。
+- Maven wrapper（mvnw）在本机不可用：项目缺 .mvn/wrapper 配置，且
+    ~/.m2/wrapper/dists 下缓存的 apache-maven-3.9.9 / 3.9.16 的 lib 不完整，
+    直接调用会报 classworlds Launcher 找不到。脚本已改成自动找 IDEA 内置 Maven
+    或 PATH 的 mvn，别再折腾 mvnw。
+- 端口 5173 残留进程：上次会话的前端若没正常退出，5173 会被占用，
+    Vite 会漂到 5174。脚本启动前会先按端口杀掉旧进程，保证落在 5173。
+- 两个 @RestController 不能同名（都叫 UserController 会 Bean 名冲突）。
+    现已改名：AuthController（/api/auth）和 UserProfileController（/api/user）。别改回同名。
 - MyBatis-Plus 配了 table-prefix=t_，实体类用 User 即可，无需 @TableName。
 - 验证码是一次性的（防重放），联调时每个用例要重新领一张。
-- 前端用 hash 路由（createWebHashHistory），所以地址是
-  http://localhost:5173/#/login 这种，部署时不用配服务器重写。
+- 前端用 hash 路由（createWebHashHistory），地址是
+    http://localhost:5173/#/login，部署不用配服务器重写。
 
 ----------------------------------------------------------------
 5. 已完成的改造（别重复做）
 ----------------------------------------------------------------
-- SQL：sql/blockcraft_init.sql（建库+建表+演示账号），已落本地。
-- 后端：entity/mapper/service/controller/dto/vo/util/config/common
-  全套；统一返回 Result；JWT 鉴权拦截器；图片验证码；SHA256+salt 密码。
+- SQL：sql/blockcraft_init.sql（建库+建表+演示账号，已落本地）。
+    曾修过中文昵称写入失败（ERROR 1406）：在脚本头部加了 SET NAMES utf8mb4;
+    三种执行方式（命令行 / IDEA / Navicat）现在都能正确写中文。
+- 后端：entity/mapper/service/controller/dto/vo/util/config/common 全套；
+    统一返回 Result；JWT(HS256) 鉴权拦截器；图片验证码；SHA256+salt 密码。
 - 前端：src/api/{request,auth,index}.js 请求层；登录/注册接真实后端；
-  新增 HomeView 主页（调 /api/user/info，可退出）；路由守卫；
-  401 自动清登录态回登录页。
+    新增 HomeView 主页（调 /api/user/info，可退出）；路由守卫；
+    401 自动清登录态回登录页。
 - 文档：后端 README.md。
 
 ----------------------------------------------------------------
-6. 还缺 / 可继续做（按需）
+6. 还缺 / 可继续做（按需，都不是阻塞项）
 ----------------------------------------------------------------
-- 后端 /auth/logout 目前没有实现（前端退出是纯客户端清 token，
-  因为 JWT 无状态）。要真正服务端失效需加 token 黑名单。
+- 后端 /api/auth/logout 是空实现（前端退出是纯客户端清 token，因为 JWT 无状态）。
+    要真正服务端失效需加 token 黑名单（Redis 或内存）。
 - 没有角色/权限体系；没有“记住我”的服务端有效期延长。
-- 没有前端路由级 loading/过渡动画增强（现有已可用）。
 - 没有单元测试（仅手动联调验证过）。
-- 生产部署：前端 npm run build 产物在 dist/，可放 Nginx 或
-  由后端静态托管；跨域 CORS 后端已放开 /api/**。
+- 验证码存内存，多实例部署要换 Redis。
+- 残留一个 Thymeleaf 演示 UserController + templates/user/login.html（无害，不影响 API）。
 
 ----------------------------------------------------------------
-7. 下次开机最短流程
+7. 下次开机最短流程（目标：少思考、快启动）
 ----------------------------------------------------------------
 1) 读本项目根目录的 AI_PROJECT_NOTES.txt（就是本文件）。
-2) 双击 启动全部.bat，等约 20 秒。
+2) 双击 start-all.bat，等约 30 秒（脚本会按需打包/装依赖、清 SERVER__PORT、清端口）。
 3) 浏览器开 http://localhost:5173 ，用 Steve / 123456 登录验证。
 4) 如需改代码：后端在 IDEA 打开 springBootTest；前端改完 npm run dev。
+5) 收工时双击 stop-all.bat 停止。
 ================================================================
