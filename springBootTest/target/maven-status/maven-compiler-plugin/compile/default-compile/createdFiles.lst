@@ -2,12 +2,14 @@ com\fenglin\springboottest\service\impl\UserServiceImpl.class
 com\fenglin\springboottest\service\impl\CaptchaServiceImpl$CaptchaEntry.class
 com\fenglin\springboottest\config\MybatisPlusConfig.class
 com\fenglin\springboottest\common\UserContext.class
+com\fenglin\springboottest\SpringBootTestApplication.class
 com\fenglin\springboottest\common\GlobalExceptionHandler.class
 com\fenglin\springboottest\common\Result.class
 com\fenglin\springboottest\config\WebMvcConfig.class
 com\fenglin\springboottest\interceptor\AuthInterceptor.class
 com\fenglin\springboottest\entity\User.class
 com\fenglin\springboottest\vo\UserVO.class
+com\fenglin\springboottest\UserController.class
 com\fenglin\springboottest\service\impl\CaptchaServiceImpl.class
 com\fenglin\springboottest\common\BusinessException.class
 com\fenglin\springboottest\config\MybatisPlusConfig$1.class
